@@ -3,7 +3,7 @@ BEGIN {
   $App::genconf::AUTHORITY = 'cpan:FFFINKEL';
 }
 {
-  $App::genconf::VERSION = '0.003';
+  $App::genconf::VERSION = '0.004';
 }
 
 #ABSTRACT: The world's simplest config file generator
@@ -33,10 +33,20 @@ sub run {
 
     if ( $self->{version} ) {
         $self->puts("genconf (App::genconf) version $App::genconf::VERSION");
-        exit;
+        exit 1;
     }
 
-    $self->_generate_config(@ARGV);
+    if ( -d $ARGV[0] ) {
+        opendir( DH, $ARGV[0] );
+        my @files = readdir(DH);
+        closedir(DH);
+
+        $self->_generate_config($_) for @files;
+    }
+    elsif ( -f $ARGV[0] ) {
+        $self->_generate_config($ARGV[0]);
+    }
+
 }
 
 
@@ -56,12 +66,13 @@ USAGE
 
 
 sub _generate_config {
-    my $self = shift;
+    my $self     = shift;
+    my $template = shift;
 
     die 'Must specify template name' unless $ARGV[0];
 
     my $tt = Template->new() || die "$Template::ERROR\n";
-    $tt->process( $ARGV[0], \%ENV ) || die $tt->error();
+    $tt->process( $template, \%ENV ) || die $tt->error();
 
     return 1;
 }
@@ -80,7 +91,7 @@ App::genconf - The world's simplest config file generator
 
 =head1 VERSION
 
-version 0.003
+version 0.004
 
 =head1 SYNOPSIS
 

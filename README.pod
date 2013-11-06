@@ -41,10 +41,20 @@ sub run {
 
     if ( $self->{version} ) {
         $self->puts("genconf (App::genconf) version $App::genconf::VERSION");
-        exit;
+        exit 1;
     }
 
-    $self->_generate_config(@ARGV);
+    if ( -d $ARGV[0] ) {
+        opendir( DH, $ARGV[0] );
+        my @files = readdir(DH);
+        closedir(DH);
+
+        $self->_generate_config($_) for @files;
+    }
+    elsif ( -f $ARGV[0] ) {
+        $self->_generate_config($ARGV[0]);
+    }
+
 }
 
 =head2 usage
@@ -70,12 +80,13 @@ USAGE
 =cut
 
 sub _generate_config {
-    my $self = shift;
+    my $self     = shift;
+    my $template = shift;
 
     die 'Must specify template name' unless $ARGV[0];
 
     my $tt = Template->new() || die "$Template::ERROR\n";
-    $tt->process( $ARGV[0], \%ENV ) || die $tt->error();
+    $tt->process( $template, \%ENV ) || die $tt->error();
 
     return 1;
 }
