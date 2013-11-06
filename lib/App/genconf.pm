@@ -3,7 +3,7 @@ BEGIN {
   $App::genconf::AUTHORITY = 'cpan:FFFINKEL';
 }
 {
-  $App::genconf::VERSION = '0.002';
+  $App::genconf::VERSION = '0.003';
 }
 
 #ABSTRACT: The world's simplest config file generator
@@ -80,7 +80,7 @@ App::genconf - The world's simplest config file generator
 
 =head1 VERSION
 
-version 0.002
+version 0.003
 
 =head1 SYNOPSIS
 
