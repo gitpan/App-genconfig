@@ -1,9 +1,31 @@
 ==================================================
-Changes from 2012-11-06 00:00:00 +0000 to present.
+Changes from 2012-11-07 00:00:00 +0000 to present.
 ==================================================
 
 ------------------------------------------
-version 0.004 at 2013-11-06 06:01:57 +0000
+version 0.005 at 2013-11-07 02:49:18 +0000
+------------------------------------------
+
+  Change: 32517f67ce7d9f8b65550e6a463ecf3289b29079
+  Author: Matt Finkel <finkel.matt@gmail.com>
+  Date : 2013-11-06 10:13:29 +0000
+
+    Update POD, no funtional changes 
+
+  Change: 37381e78dacad1c068dc97f153fdd423d981db71
+  Author: Matt Finkel <finkel.matt@gmail.com>
+  Date : 2013-11-06 00:44:42 +0000
+
+    Add file output to app 
+
+  Change: 14cf8e6995f4d715ef5ab0f708e54031055945c2
+  Author: Matt Finkel <finkel.matt@gmail.com>
+  Date : 2013-11-06 00:44:26 +0000
+
+    Remove test file 
+
+------------------------------------------
+version 0.004 at 2013-11-06 06:01:36 +0000
 ------------------------------------------
 
   Change: a20c3f3ad82cb51459b4874b62303e05c9575ef3

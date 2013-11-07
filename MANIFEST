@@ -8,7 +8,6 @@ README.pod
 bin/genconf
 dist.ini
 lib/App/genconf.pm
-local.yml
 t/release-eol.t
 t/release-pod-coverage.t
 t/release-pod-syntax.t

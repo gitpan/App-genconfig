@@ -3,7 +3,7 @@ BEGIN {
   $App::genconf::AUTHORITY = 'cpan:FFFINKEL';
 }
 {
-  $App::genconf::VERSION = '0.004';
+  $App::genconf::VERSION = '0.005';
 }
 
 #ABSTRACT: The world's simplest config file generator
@@ -11,7 +11,8 @@ BEGIN {
 use strict;
 use warnings;
 
-use Getopt::Long qw(GetOptions :config bundling);
+use Getopt::Long qw/ GetOptions :config bundling /;
+use Path::Class qw/ file /;
 use Template;
 
 
@@ -26,15 +27,17 @@ sub run {
     my ( $self, @args ) = @_;
     local @ARGV = @args;
     GetOptions(
-        'v|verbose!' => sub { ++$self->{verbose} },
-        'V|version!' => \$self->{version},
-        'config-dir' => \$self->{config_dir},
+        'v|verbose!'   => sub { ++$self->{verbose} },
+        'V|version!'   => \$self->{version},
+        'config-dir=s' => \$self->{config_dir},
     ) or $self->usage;
 
     if ( $self->{version} ) {
         $self->puts("genconf (App::genconf) version $App::genconf::VERSION");
         exit 1;
     }
+
+    die 'Must specify template file or directory' unless $ARGV[0];
 
     if ( -d $ARGV[0] ) {
         opendir( DH, $ARGV[0] );
@@ -44,7 +47,7 @@ sub run {
         $self->_generate_config($_) for @files;
     }
     elsif ( -f $ARGV[0] ) {
-        $self->_generate_config($ARGV[0]);
+        $self->_generate_config( $ARGV[0] );
     }
 
 }
@@ -69,10 +72,16 @@ sub _generate_config {
     my $self     = shift;
     my $template = shift;
 
-    die 'Must specify template name' unless $ARGV[0];
+    my $template_file = file($template);
+    my $filename      = $template_file->basename;
+
+    my $config =
+      $self->{config_dir}
+      ? "$self->{config_dir}/$filename"
+      : $filename;
 
     my $tt = Template->new() || die "$Template::ERROR\n";
-    $tt->process( $template, \%ENV ) || die $tt->error();
+    $tt->process( $template, \%ENV, $config ) || die $tt->error();
 
     return 1;
 }
@@ -91,13 +100,70 @@ App::genconf - The world's simplest config file generator
 
 =head1 VERSION
 
-version 0.004
+version 0.005
 
 =head1 SYNOPSIS
 
+  # Create a config template
+  vi templates/config/myapp_local.yml
+
+    app_name: [% env.APP_NAME %]
+    is_production: [% env.IS_PRODUCTION %]
+
+  # Add the required environtment variables
+  export APP_NAME=LOLCatter
+  export IS_PRODUCTION=0
+
+  # Run genconfig
+  genconfig templates/config
+
+Tips:
+
+  # Make config values required by using the assert plugin, which causes the template processor to throw an error if undef values are returned:
+  [% USE assert %]
+  app_name: [% env.assert.APP_NAME %]
+
+  # Cut out optional config sections with a simple IF:
+  [% IF env.DB_CONN_STRING and env.DB_USERNAME and env.DB_PASSWORD %]
+  db_connection_info:
+    - [% env.DB_CONN_STRING %]
+    - [% env.DB_USERNAME %]
+    - [% env.DB_PASSWORD %]
+  [% END %]
+
+=head1 DESCRIPTION
+
+Genconf is a very simple config file generation tool.  Source control config
+templates; use a simple command to genrate|update whatever environment's
+config files.
+
+How it helps:
+
+=over
+
+=item
+
+Store all configs in version control
+
+=item
+
+Never commit passwords to version control
+
+=item
+
+Keep team members' dev config schemas in sync
+
+=back
+
 =head1 NAME
 
-App::genconf
+App::genconf - The world's simplest config file generator
+
+=head1 ARGUMENTS
+
+=head2 config-dir
+
+Specify the config file output directory
 
 =head1 METHODS
 
@@ -107,7 +173,11 @@ App::genconf
 
 =head2 usage
 
+Print usage help
+
 =head2 _generate_config
+
+Generate config file for template
 
 =head1 AUTHOR
 

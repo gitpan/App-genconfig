@@ -23,12 +23,13 @@ my %WriteMakefileArgs = (
   "NAME" => "App::genconfig",
   "PREREQ_PM" => {
     "Getopt::Long" => "2.42",
+    "Path::Class" => 0,
     "Template" => "2.25",
     "strict" => 0,
     "warnings" => 0
   },
   "TEST_REQUIRES" => {},
-  "VERSION" => "0.004",
+  "VERSION" => "0.005",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -37,6 +38,7 @@ my %WriteMakefileArgs = (
 
 my %FallbackPrereqs = (
   "Getopt::Long" => "2.42",
+  "Path::Class" => 0,
   "Template" => "2.25",
   "strict" => 0,
   "warnings" => 0

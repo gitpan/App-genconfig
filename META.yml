@@ -14,8 +14,9 @@ meta-spec:
 name: App-genconfig
 requires:
   Getopt::Long: 2.42
+  Path::Class: 0
   Template: 2.25
   strict: 0
   warnings: 0
-version: 0.004
+version: 0.005
 x_authority: cpan:FFFINKEL
